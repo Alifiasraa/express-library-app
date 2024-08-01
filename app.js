@@ -1,11 +1,11 @@
 const express = require("express");
-// const indexRoutes = require("./routes");
+const indexRoutes = require("./src/routes");
 
 const app = express();
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Hello, World!");
+  res.send("Welcome to library!");
 });
 
 app.use("/api", indexRoutes);
