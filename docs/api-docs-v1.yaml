@@ -1,0 +1,979 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Library API
+  description: ""
+servers:
+  - url: http://localhost:3000/api/v1
+tags:
+  - name: "Member"
+    description: "Member API"
+  - name: "Book"
+    description: "Book API"
+  - name: "Borrowing"
+    description: "Borrowing API"
+paths:
+  /books/:
+    # add book
+    post:
+      tags:
+        - "Book"
+      summary: "Add book"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  example: "JK-45"
+                title:
+                  type: string
+                  example: "Harry Potter"
+                author:
+                  type: string
+                  example: "J.K Rowling"
+                stock:
+                  type: integer
+                  example: 1
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Book added successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                        description: "Unique identifier for the book (auto-incremented)"
+                      code:
+                        type: string
+                        example: "JK-45"
+                      title:
+                        type: string
+                        example: "Harry Potter"
+                      author:
+                        type: string
+                        example: "J.K Rowling"
+                      stock:
+                        type: integer
+                        example: 1
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "Please provide all required fields"
+              examples:
+                missing_fields:
+                  summary: Missing required fields
+                  value:
+                    status: "fail"
+                    message: "Please provide all required fields"
+                invalid_types:
+                  summary: Invalid input types
+                  value:
+                    status: "fail"
+                    message: "Invalid input types"
+                negative_stock:
+                  summary: Stock less than 0
+                  value:
+                    status: "fail"
+                    message: "Stock must be greater than or equal to 0"
+                existing_book:
+                  summary: Book already exists
+                  value:
+                    status: "fail"
+                    message: "Book with this code already exists."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "An unexpected error occurred."
+
+    # get book list
+    get:
+      tags:
+        - "Book"
+      summary: "Get book list"
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Book retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                        description: "Unique identifier for the book (auto-incremented)"
+                      code:
+                        type: string
+                        example: "JK-45"
+                      title:
+                        type: string
+                        example: "Harry Potter"
+                      author:
+                        type: string
+                        example: "J.K Rowling"
+                      stock:
+                        type: integer
+                        example: 1
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "An unexpected error occurred."
+
+  /books/{id}:
+    # get book detail
+    get:
+      tags:
+        - "Book"
+      summary: "Get book detail"
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "1"
+            description: "Unique identifier for the book"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Book retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                        description: "Unique identifier for the book (auto-incremented)"
+                      code:
+                        type: string
+                        example: "JK-45"
+                      title:
+                        type: string
+                        example: "Harry Potter"
+                      author:
+                        type: string
+                        example: "J.K Rowling"
+                      stock:
+                        type: integer
+                        example: 1
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "Book not found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "An unexpected error occurred."
+
+    # update book
+    put:
+      tags:
+        - "Book"
+      summary: "Update book"
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "1"
+            description: "Unique identifier for the book"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  example: "JK-45"
+                title:
+                  type: string
+                  example: "Harry Potter and the Chamber of Secrets"
+                author:
+                  type: string
+                  example: "J.K. Rowling"
+                stock:
+                  type: integer
+                  example: 10
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Book updated successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                        description: "Unique identifier for the book (auto-incremented)"
+                      code:
+                        type: string
+                        example: "JK-45"
+                      title:
+                        type: string
+                        example: "Harry Potter"
+                      author:
+                        type: string
+                        example: "J.K Rowling"
+                      stock:
+                        type: integer
+                        example: 10
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "An unexpected error occurred."
+
+    # delete book
+    delete:
+      tags:
+        - "Book"
+      summary: "Delete book"
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "1"
+            description: "Unique identifier for the book"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Book deleted successfully"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "An unexpected error occurred."
+
+  /members/:
+    # add member
+    post:
+      tags:
+        - "Member"
+      summary: "Add member"
+      description: ""
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  example: M001
+                name:
+                  type: string
+                  example: Angga
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Member added successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      code:
+                        type: string
+                        example: "M001"
+                      name:
+                        type: string
+                        example: "Angga"
+                      booksBorrowed:
+                        type: integer
+                        example: 0
+                      penalty:
+                        type: boolean
+                        example: false
+                      penaltyEndDate:
+                        type: string
+                        nullable: true
+                        example: null
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "Please provide all required fields"
+              examples:
+                missing_fields:
+                  summary: Missing required fields
+                  value:
+                    status: "fail"
+                    message: "Please provide all required fields"
+                invalid_types:
+                  summary: invalid input types
+                  value:
+                    status: "fail"
+                    message: "Invalid input types"
+                existing_member:
+                  summary: Member already exists
+                  value:
+                    status: "fail"
+                    message: "Member with this code already exists."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "An unexpected error occurred."
+
+    # get member list
+    get:
+      tags:
+        - "Member"
+      summary: "Get member list"
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Member retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      code:
+                        type: string
+                        example: "M001"
+                      name:
+                        type: string
+                        example: "Angga"
+                      booksBorrowed:
+                        type: integer
+                        example: 0
+                      penalty:
+                        type: boolean
+                        example: false
+                      penaltyEndDate:
+                        type: string
+                        nullable: true
+                        example: null
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "An unexpected error occurred."
+
+  /members/{id}:
+    # get member detail
+    get:
+      tags:
+        - "Member"
+      summary: "Get member detail"
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "1"
+            description: "Unique identifier for the book"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Member retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      code:
+                        type: string
+                        example: "M001"
+                      name:
+                        type: string
+                        example: "Angga"
+                      booksBorrowed:
+                        type: integer
+                        example: 0
+                      penalty:
+                        type: boolean
+                        example: false
+                      penaltyEndDate:
+                        type: string
+                        nullable: true
+                        example: null
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "Member not found."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "An unexpected error occurred."
+
+    # update member
+    put:
+      tags:
+        - "Member"
+      summary: Update member
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "1"
+            description: "Unique identifier for the book"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  example: "M001"
+                name:
+                  type: string
+                  example: "Angga Dudu"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Member updated successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      code:
+                        type: string
+                        example: "M001"
+                      name:
+                        type: string
+                        example: "Angga Dudu"
+                      booksBorrowed:
+                        type: integer
+                        example: 0
+                      penalty:
+                        type: boolean
+                        example: false
+                      penaltyEndDate:
+                        type: string
+                        nullable: true
+                        example: null
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "An unexpected error occurred."
+
+    # delete member
+    delete:
+      tags:
+        - "Member"
+      summary: "Delete member"
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "1"
+            description: "Unique identifier for the book"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Member deleted successfully"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "An unexpected error occurred."
+
+  /borrowings/:
+    # borrow book
+    post:
+      tags:
+        - "Borrowing"
+      summary: "Borrowing books"
+      description: ""
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                memberId:
+                  type: integer
+                  example: 1
+                bookId:
+                  type: integer
+                  example: 1
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Book borrowed successfully."
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      memberId:
+                        type: integer
+                        example: 1
+                      bookId:
+                        type: integer
+                        example: 1
+                      borrowedAt:
+                        type: string
+                        format: date-time
+                        example: "2024-08-03T03:56:10.268Z"
+                      returnedAt:
+                        type: string
+                        nullable: true
+                        example: null
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "Member may not borrow more than 2 books at a time"
+              examples:
+                max_books_reached:
+                  summary: Max book reached
+                  value:
+                    status: "fail"
+                    message: "Member may not borrow more than 2 books at a time"
+                book_already_borrowed:
+                  summary: Book already Borrowed
+                  value:
+                    status: "fail"
+                    message: "This book is currently borrowed by another member"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "Member is currently penalized and cannot borrow books"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "Member not found"
+              examples:
+                member_not_found:
+                  summary: Member not found
+                  value:
+                    status: "fail"
+                    message: "Member not found"
+                book_not_available:
+                  summary: Book not found
+                  value:
+                    status: "fail"
+                    message: "Book not available or out of stock"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "An unexpected error occurred."
+
+    # get all borrowings
+    get:
+      tags:
+        - "Borrowing"
+      summary: "Retrieve borrowing records"
+      description: ""
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Borrowing records retrieved successfully."
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      memberId:
+                        type: integer
+                        example: 1
+                      bookId:
+                        type: integer
+                        example: 1
+                      borrowedAt:
+                        type: string
+                        format: date-time
+                        example: "2024-08-03T03:56:10.268Z"
+                      returnedAt:
+                        type: string
+                        nullable: true
+                        example: null
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "An unexpected error occurred."
+
+  /borrowings/{id}/return:
+    # return book
+    put:
+      tags:
+        - "Borrowing"
+      summary: "Return a book"
+      description: ""
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                memberId:
+                  type: integer
+                  example: 1
+                bookId:
+                  type: integer
+                  example: 1
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Book returned successfully."
+                  data:
+                    type: object
+                    properties:
+                      count:
+                        type: integer
+                        example: 1
+                        description: "Number of records updated."
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "This book was not borrowed by the member or has already been returned."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "fail"
+                  message:
+                    type: string
+                    example: "An unexpected error occurred."
