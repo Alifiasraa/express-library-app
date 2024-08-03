@@ -19,7 +19,24 @@ const addBook = async (data) => {
 
 const getBookList = async () => {
   try {
-    const result = await prisma.book.findMany();
+    const borrowedBooks = await prisma.borrowing.findMany({
+      where: {
+        returnedAt: null,
+      },
+      select: {
+        bookId: true,
+      },
+    });
+
+    const borrowedBookIds = borrowedBooks.map((borrowing) => borrowing.bookId);
+
+    const result = await prisma.book.findMany({
+      where: {
+        id: {
+          notIn: borrowedBookIds,
+        },
+      },
+    });
     return result;
   } catch (error) {
     throw new Error(error.message);
