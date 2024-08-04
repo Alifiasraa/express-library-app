@@ -113,7 +113,7 @@ const returnBook = async (memberId, bookId) => {
   }
 };
 
-const getBorrowings = async () => {
+const getAllBorrowings = async () => {
   try {
     const result = await prisma.borrowing.findMany();
     return result;
@@ -125,5 +125,5 @@ const getBorrowings = async () => {
 module.exports = {
   borrowBook,
   returnBook,
-  getBorrowings,
+  getAllBorrowings,
 };
