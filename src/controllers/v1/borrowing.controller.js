@@ -2,7 +2,7 @@ const prisma = require("../../../config/prisma");
 const {
   borrowBook,
   returnBook,
-  getBorrowings,
+  getAllBorrowings,
 } = require("../../models/v1/borrowing.model");
 
 const borrowBookController = async (req, res) => {
@@ -109,7 +109,7 @@ const returnBookController = async (req, res) => {
 
 const getAllBorrowingsController = async (req, res) => {
   try {
-    const borrowings = await getBorrowings();
+    const borrowings = await getAllBorrowings();
     res.status(200).json({
       status: "success",
       message: "Borrowing records retrieved successfully.",
