@@ -131,33 +131,45 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "success"
-                  message:
-                    type: string
-                    example: "Book retrieved successfully"
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                        example: 1
-                        description: "Unique identifier for the book (auto-incremented)"
-                      code:
-                        type: string
-                        example: "JK-45"
-                      title:
-                        type: string
-                        example: "Harry Potter"
-                      author:
-                        type: string
-                        example: "J.K Rowling"
-                      stock:
-                        type: integer
-                        example: 1
+                type: array
+                items:
+                  oneOf:
+                    - type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                          description: "Unique identifier for the book (auto-incremented)"
+                        code:
+                          type: string
+                          example: "JK-45"
+                        title:
+                          type: string
+                          example: "Harry Potter"
+                        author:
+                          type: string
+                          example: "J.K. Rowling"
+                        stock:
+                          type: integer
+                          example: 1
+                    - type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 2
+                          description: "Unique identifier for the book (auto-incremented)"
+                        code:
+                          type: string
+                          example: "SHR-1"
+                        title:
+                          type: string
+                          example: "A Study in Scarlet"
+                        author:
+                          type: string
+                          example: "Arthur Conan Doyle"
+                        stock:
+                          type: integer
+                          example: 1
         "500":
           description: Internal Server Error
           content:
@@ -489,27 +501,51 @@ paths:
                     type: string
                     example: "Member retrieved successfully"
                   data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                        example: 1
-                      code:
-                        type: string
-                        example: "M001"
-                      name:
-                        type: string
-                        example: "Angga"
-                      booksBorrowed:
-                        type: integer
-                        example: 0
-                      penalty:
-                        type: boolean
-                        example: false
-                      penaltyEndDate:
-                        type: string
-                        nullable: true
-                        example: null
+                    type: array
+                    items:
+                      oneOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            code:
+                              type: string
+                              example: "M001"
+                            name:
+                              type: string
+                              example: "Angga"
+                            booksBorrowed:
+                              type: integer
+                              example: 0
+                            penalty:
+                              type: boolean
+                              example: false
+                            penaltyEndDate:
+                              type: string
+                              nullable: true
+                              example: null
+                        - type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 2
+                            code:
+                              type: string
+                              example: "M002"
+                            name:
+                              type: string
+                              example: "Ferry"
+                            booksBorrowed:
+                              type: integer
+                              example: 1
+                            penalty:
+                              type: boolean
+                              example: true
+                            penaltyEndDate:
+                              type: string
+                              nullable: true
+                              example: "2024-08-04T00:00:00.000Z"
         "500":
           description: Internal Server Error
           content:
@@ -871,25 +907,47 @@ paths:
                     type: string
                     example: "Borrowing records retrieved successfully."
                   data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                        example: 1
-                      memberId:
-                        type: integer
-                        example: 1
-                      bookId:
-                        type: integer
-                        example: 1
-                      borrowedAt:
-                        type: string
-                        format: date-time
-                        example: "2024-08-03T03:56:10.268Z"
-                      returnedAt:
-                        type: string
-                        nullable: true
-                        example: null
+                    type: array
+                    items:
+                      oneOf:
+                        - type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            memberId:
+                              type: integer
+                              example: 1
+                            bookId:
+                              type: integer
+                              example: 1
+                            borrowedAt:
+                              type: string
+                              format: date-time
+                              example: "2024-08-03T03:56:10.268Z"
+                            returnedAt:
+                              type: string
+                              nullable: true
+                              example: null
+                        - type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 2
+                            memberId:
+                              type: integer
+                              example: 2
+                            bookId:
+                              type: integer
+                              example: 2
+                            borrowedAt:
+                              type: string
+                              format: date-time
+                              example: "2024-08-01T14:30:00.000Z"
+                            returnedAt:
+                              type: string
+                              format: date-time
+                              example: "2024-08-10T14:30:00.000Z"
         "500":
           description: Internal Server Error
           content:
